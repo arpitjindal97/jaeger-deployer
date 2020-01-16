@@ -1,0 +1,25 @@
+
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+    nginx.ingress.kubernetes.io/grpc-backend: "true"
+    nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
+    nginx.ingress.kubernetes.io/auth-tls-secret: "default/temp-tls-config"
+  #labels:
+  #  garden.sapcloud.io/purpose: managed-cert
+  name: temp-collector
+  namespace: default
+spec:
+  rules:
+    - host: temp.ingress.mon-team.perf-load.shoot.dev.k8s-hana.ondemand.com
+      http:
+        paths:
+        - backend:
+            serviceName: temp-jaeger-collector
+            servicePort: 14250
+  tls:
+  - hosts:
+    - temp.ingress.mon-team.perf-load.shoot.dev.k8s-hana.ondemand.com
+    secretName: temp-tls-config
