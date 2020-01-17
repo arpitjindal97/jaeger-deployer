@@ -1,0 +1,38 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: jaeger-tenant-deploy
+spec:
+  activeDeadlineSeconds: 300
+  template:
+    metadata:
+      name: jaeger-tenant-deploy
+    spec:
+      containers:
+      - name: jaeger-tenant-deploy
+        image: path to image
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: CUSTOMER_NAME
+          value: cust
+        - name: KAFKA_BROKER
+          value: kafka:9092
+        - name: CASSANDRA_HOST
+          value: cassandra-host
+        - name: DOMAIN
+          value: ingress.mon-team.perf-load.shoot.dev.k8s-hana.ondemand.com
+        - name: CASSANDRA_DATACENTER
+          value: dc1
+        - name: KUBECONFIG
+          value: /config/kube.yaml
+        resources:
+          {}
+        volumeMounts:
+          - name: kube
+            mountPath: /config
+            readOnly: true
+      restartPolicy: OnFailure
+      volumes:
+        - name: kube
+          configMap:
+            name: kube-config

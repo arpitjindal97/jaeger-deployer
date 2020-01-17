@@ -1,4 +1,4 @@
-
+---
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
@@ -13,7 +13,7 @@ metadata:
   namespace: default
 spec:
   rules:
-    - host: temp.ingress.mon-team.perf-load.shoot.dev.k8s-hana.ondemand.com
+    - host: collector-url
       http:
         paths:
         - backend:
@@ -21,5 +21,25 @@ spec:
             servicePort: 14250
   tls:
   - hosts:
-    - temp.ingress.mon-team.perf-load.shoot.dev.k8s-hana.ondemand.com
+    - collector-url
     secretName: temp-tls-config
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    garden.sapcloud.io/purpose: managed-cert
+  name: temp-query
+  namespace: default
+spec:
+  rules:
+    - host: query-url
+      http:
+        paths:
+        - backend:
+            serviceName: temp-jaeger-query
+            servicePort: 80
+  tls:
+  - hosts:
+    - query-url
+    secretName: temp-tls-query
