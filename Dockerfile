@@ -18,10 +18,9 @@ RUN cd linux-amd64 && chmod +x helm && mv ./helm /usr/local/bin/helm
 # Copying sources to container
 RUN mkdir /jaeger
 WORKDIR /jaeger
-COPY src/* .
+COPY src/*  /jaeger/
 RUN chmod +x create.sh
-RUN git -c http.sslVerify=false clone https://github.wdf.sap.corp/EngSrv-Monitoring/helm-chart-jaeger.git
-RUN cd helm-chart-jaeger && helm dependency update
+RUN helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
 
 # Command to start container with
 CMD ./create.sh

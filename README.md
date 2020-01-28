@@ -1,2 +1,2 @@
 # jaeger-tenant-deploy
-Kubernetes deployment to deploy Jaeger components
+Kubernetes Job to deploy Jaeger components

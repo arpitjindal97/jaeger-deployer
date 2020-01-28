@@ -21,6 +21,8 @@ openssl req -nodes -newkey rsa:2048 -keyout $customerName/server.key -out $custo
 # Signing CSR with CA.crt and CA.key
 openssl x509 -req -days 1460 -in $customerName/server.csr -CA $customerName/CA.crt  -CAkey $customerName/CA.key -set_serial 01 -out $customerName/server.crt
 
+helm repo update
+
 # Generating Jaeger components YAML
 helm template --set \
 provisionDataStore.cassandra=false,\
@@ -29,7 +31,7 @@ storage.cassandra.host=$cassandraHost,\
 cassandra.config.dc_name=$cassandraDC,\
 storage.cassandra.password=password,\
 ingester.enabled=true,\
-storage.kafka.broker=$kafkaBroker,\
+storage.kafka.broker={$kafkaBroker},\
 storage.kafka.topic=$customerName,\
 collector.cmdlineParams.collector_grpc_tls=false,\
 collector.cmdlineParams.collector_grpc_tls_cert=/tls/server.crt,\
@@ -48,8 +50,8 @@ agent.cmdlineParams.reporter_grpc_tls_key=/tls/tls.key,\
 agent."secretMounts[0]".name=jaeger-tls,\
 agent."secretMounts[0]".mountPath=/tls,\
 agent."secretMounts[0]".readOnly=true,\
-agent."secretMounts[0]".secretName=$customerName-tls-config\
-$customerName "helm-chart-jaeger" > $customerName/jaeger.yaml
+agent."secretMounts[0]".secretName=$customerName-tls-config \
+$customerName jaegertracing/jaeger > $customerName/jaeger.yaml
 
 # Generating Ingress YAML
 sed \

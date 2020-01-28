@@ -10,7 +10,7 @@ spec:
     spec:
       containers:
       - name: jaeger-tenant-deploy
-        image: path to image
+        image: arpitjindal1997/jaeger-deploy
         imagePullPolicy: IfNotPresent
         env:
         - name: CUSTOMER_NAME
