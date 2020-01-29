@@ -84,7 +84,7 @@ sed \
 -e 's/collector-url/'$collectorURL'/g' \
 ingress-template.yaml > $customerName/ingress.yaml
 
-: '
+
 kubectl create secret generic "$customerName-tls-config" \
 --from-file=tls.crt=$customerName/server.crt \
 --from-file=tls.key=$customerName/server.key \
@@ -92,4 +92,3 @@ kubectl create secret generic "$customerName-tls-config" \
 --from-file=ca.key=$customerName/CA.key 
 
 kubectl apply -f $customerName/jaeger.yaml $customerName/ingress.yaml
-'
