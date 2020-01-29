@@ -11,7 +11,7 @@ spec:
       containers:
       - name: jaeger-tenant-deploy
         image: arpitjindal1997/jaeger-deploy
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         env:
         - name: CUSTOMER_NAME
           value: cust
@@ -31,7 +31,7 @@ spec:
           - name: kube
             mountPath: /config
             readOnly: true
-      restartPolicy: OnFailure
+      restartPolicy: Never
       volumes:
         - name: kube
           configMap:

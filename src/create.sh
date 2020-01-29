@@ -11,11 +11,35 @@ cassandraDC=$CASSANDRA_DATACENTER
 
 mkdir $customerName 
 
-# Generating CA.key and CA.crt
-openssl req -new -x509 -sha256 -newkey rsa:2048 -nodes -keyout $customerName/CA.key -days 365 -out $customerName/CA.crt -subj "/C=IN/ST=Bangalore/L=Bangalore/O=SAP Labs/OU=Jaeger Department/CN=$collectorURL"
+cat > $customerName/csr_details.txt <<-EOF
+[req]
+default_bits = 2048
+prompt = no
+default_md = sha256
+req_extensions = req_ext
+distinguished_name = dn
 
-# Generating KEY and CRT
-openssl req -nodes -newkey rsa:2048 -keyout $customerName/server.key -out $customerName/server.csr -subj "/C=IN/ST=Bangalore/L=Bangalore/O=SAP Labs/OU=Jaeger Department/CN=$collectorURL"
+[ dn ]
+C=IN
+ST=Bangalore
+L=Bangalore
+O=SAP Labs
+OU=Jaeger Service Provider
+emailAddress=arpit.agarwal02@sap.com
+CN = $customerName
+
+[ req_ext ]
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = $collectorURL
+EOF
+
+# Generating CA.key and CA.crt
+openssl req -new -x509 -sha256 -newkey rsa:2048 -nodes -keyout $customerName/CA.key -days 365 -out $customerName/CA.crt -config $customerName/csr_details.txt
+
+# Generating KEY and CSR
+openssl req -nodes -newkey rsa:2048 -keyout $customerName/server.key -out $customerName/server.csr -config $customerName/csr_details.txt
 
 # Generating CRT
 # Signing CSR with CA.crt and CA.key
