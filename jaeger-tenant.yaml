@@ -10,7 +10,7 @@ spec:
     spec:
       containers:
       - name: jaeger-tenant-deploy
-        image: arpitjindal1997/jaeger-deploy
+        image: docker.wdf.sap.corp:50000/jaegertracing/jaeger-deploy:latest
         imagePullPolicy: Always
         env:
         - name: CUSTOMER_NAME

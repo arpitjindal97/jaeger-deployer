@@ -1,0 +1,31 @@
+provisionDataStore:
+  cassandra: false
+
+storage:
+  cassandra:
+    keyspace: temp
+    host: cassandra-host
+  kafka:
+    brokers: [kafka-broker]
+    topic: temp
+
+cassandra:
+  config:
+    dc_name: cassandra-dc
+
+ingester:
+  enabled: true
+
+collector:
+  cmdlineParams:
+    collector_grpc_tls: false
+    collector_grpc_tls_cert: /tls/server.crt
+    collector_grpc_tls_client: /tls/ca.crt
+    collector_grpc_tls_key: /tls/server.key
+  extraSecretMounts:
+    - name: jaeger-tls
+      mountPath: /tls
+      readOnly: true
+      secretName: temp-tls-config
+
+ 
