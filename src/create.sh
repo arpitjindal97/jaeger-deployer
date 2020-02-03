@@ -4,7 +4,7 @@
 customerName=$CUSTOMER_NAME
 domain=$DOMAIN
 collectorURL=$CUSTOMER_NAME"-collector."$DOMAIN
-queryURL=$CUSTOMER_NAME"-query."$DOMAIN
+queryURL=$CUSTOMER_NAME"."$DOMAIN
 kafkaBroker=$KAFKA_BROKER
 cassandraHost=$CASSANDRA_HOST
 cassandraDC=$CASSANDRA_DATACENTER
@@ -44,42 +44,10 @@ openssl req -nodes -newkey rsa:2048 -keyout $customerName/server.key -out $custo
 
 # Generating CRT
 # Signing CSR with CA.crt and CA.key
-openssl x509 -req -days 1460 -in $customerName/server.csr -CA $customerName/CA.crt  -CAkey $customerName/CA.key -set_serial 01 -out $customerName/server.crt
+openssl x509 -req -extfile <(printf "subjectAltName=DNS:$collectorURL") -days 1460 -in $customerName/server.csr -CA $customerName/CA.crt  -CAkey $customerName/CA.key -set_serial 01 -out $customerName/server.crt
 
 # Updating repo to latest version
 helm repo update
-
-:'
-# Generating Jaeger components YAML
-helm template --set \
-provisionDataStore.cassandra=false,\
-storage.cassandra.keyspace=$customerName,\
-storage.cassandra.host=$cassandraHost,\
-cassandra.config.dc_name=$cassandraDC,\
-storage.cassandra.password=password,\
-ingester.enabled=true,\
-storage.kafka.brokers={$kafkaBroker},\
-storage.kafka.topic=$customerName,\
-collector.cmdlineParams.collector_grpc_tls=false,\
-collector.cmdlineParams.collector_grpc_tls_cert=/tls/server.crt,\
-collector.cmdlineParams.collector_grpc_tls_client-ca=/tls/ca.crt,\
-collector.cmdlineParams.collector_grpc_tls_key=/tls/server.key,\
-collector."extraSecretMounts[0]".name=jaeger-tls,\
-collector."extraSecretMounts[0]".mountPath=/tls,\
-collector."extraSecretMounts[0]".readOnly=true,\
-collector."extraSecretMounts[0]".secretName=$customerName-tls-config,\
-agent.enabled=false,\
-agent.cmdlineParams."reporter\.grpc\.host-port"=$collectorURL:443,\
-agent.cmdlineParams.reporter_grpc_tls=true,\
-agent.cmdlineParams.reporter_grpc_tls_ca=/tls/ca.crt,\
-agent.cmdlineParams.reporter_grpc_tls_cert=/tls/tls.crt,\
-agent.cmdlineParams.reporter_grpc_tls_key=/tls/tls.key,\
-agent."extraSecretMounts[0]".name=jaeger-tls,\
-agent."extraSecretMounts[0]".mountPath=/tls,\
-agent."extraSecretMounts[0]".readOnly=true,\
-agent."extraSecretMounts[0]".secretName=$customerName-tls-config \
-$customerName jaegertracing/jaeger > $customerName/jaeger.yaml
-'
 
 # Generating Ingress YAML
 sed \
@@ -98,7 +66,7 @@ sed \
 values-template.yaml > $customerName/values.yaml
 
 # Generating Jaeger YAML
-helm template $customerName . \
+helm template $customerName jaegertracing/jaeger \
 --values $customerName/values.yaml > $customerName/jaeger.yaml
 
 # Creating Secrets and applying YAMLs
@@ -108,4 +76,4 @@ kubectl create secret generic "$customerName-tls-config" \
 --from-file=ca.crt=$customerName/CA.crt \
 --from-file=ca.key=$customerName/CA.key 
 
-kubectl apply -f $customerName/jaeger.yaml $customerName/ingress.yaml
+kubectl apply -f $customerName/jaeger.yaml -f $customerName/ingress.yaml

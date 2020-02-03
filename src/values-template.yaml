@@ -28,4 +28,6 @@ collector:
       readOnly: true
       secretName: temp-tls-config
 
+agent:
+  enabled: false
  

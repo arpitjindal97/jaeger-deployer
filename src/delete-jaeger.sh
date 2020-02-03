@@ -1,5 +1,5 @@
 
-customerName="temp"
+customerName="cust"
 
 kubectl delete \
 serviceaccount/$customerName-jaeger-cassandra-schema \
@@ -16,8 +16,6 @@ deployment.apps/$customerName-jaeger-query \
 job.batch/$customerName-jaeger-cassandra-schema \
 secrets/$customerName-jaeger-cassandra
 
-kubectl delete secret $customerName-ingress $customerName-tls-config $customerName-ca
+kubectl delete secret $customerName-tls-config
 
-kubectl delete ingress $customerName-collector
-
-rm -rf $customerName
+kubectl delete ingress $customerName-collector $customerName-query
