@@ -2,7 +2,7 @@ FROM nginx:latest
 
 # Preparing container
 RUN apt-get update \
-    && apt-get -y install curl git \
+    && apt-get -y install curl git jq \
     && apt-get -y upgrade openssl
 
 # Installing kubectl command-line tool

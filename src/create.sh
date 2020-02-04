@@ -36,16 +36,35 @@ subjectAltName = @alt_names
 DNS.1 = $collectorURL
 EOF
 
+echo
+echo "- Generating Certificates for Tenant"
+
 # Generating CA.key and CA.crt
-openssl req -new -x509 -sha256 -newkey rsa:2048 -nodes -keyout $customerName/CA.key -days 365 -out $customerName/CA.crt -config $customerName/csr_details.txt
+openssl req -new -x509 -sha256 -newkey rsa:2048 -nodes \
+            -keyout $customerName/CA.key \
+            -days 365 \
+            -out $customerName/CA.crt \
+            -config $customerName/csr_details.txt &> /dev/null
 
 # Generating KEY and CSR
-openssl req -nodes -newkey rsa:2048 -keyout $customerName/server.key -out $customerName/server.csr -config $customerName/csr_details.txt
+openssl req -nodes -newkey rsa:2048 \
+            -keyout $customerName/server.key \
+            -out $customerName/server.csr \
+            -config $customerName/csr_details.txt &> /dev/null
 
 # Generating CRT
 # Signing CSR with CA.crt and CA.key
-openssl x509 -req -extfile <(printf "subjectAltName=DNS:$collectorURL") -days 1460 -in $customerName/server.csr -CA $customerName/CA.crt  -CAkey $customerName/CA.key -set_serial 01 -out $customerName/server.crt
+openssl x509    -req -extfile <(printf "subjectAltName=DNS:$collectorURL") \
+                -days 1460 \
+                -in $customerName/server.csr \
+                -CA $customerName/CA.crt \
+                -CAkey $customerName/CA.key \
+                -set_serial 01 \
+                -out $customerName/server.crt &> /dev/null
 
+echo 
+echo "- Updating Helm Repository"
+echo
 # Updating repo to latest version
 helm repo update
 
@@ -65,6 +84,9 @@ sed \
 -e 's/collector-url/'$collectorURL'/g' \
 values-template.yaml > $customerName/values.yaml
 
+echo 
+echo "- Installing Jaeger Components"
+echo
 # Generating Jaeger YAML
 helm template $customerName jaegertracing/jaeger \
 --values $customerName/values.yaml > $customerName/jaeger.yaml
@@ -77,3 +99,21 @@ kubectl create secret generic "$customerName-tls-config" \
 --from-file=ca.key=$customerName/CA.key 
 
 kubectl apply -f $customerName/jaeger.yaml -f $customerName/ingress.yaml
+
+tls_ca=`cat $customerName/CA.crt`
+tls_ca_key=`cat $customerName/CA.key`
+tls_cert=`cat $customerName/server.crt`
+tls_key=`cat $customerName/server.key`
+
+echo
+echo "- JSON to be used in VCAP"
+echo
+jq -n   --arg tls_ca "$tls_ca" \
+        --arg tls_ca_key "$tls_ca_key" \
+        --arg tls_cert "$tls_cert" \
+        --arg tls_key "$tls_key" \
+        --arg collector "$collectorURL" \
+        --arg query "$queryURL" \
+        '{"jaeger-collector-url": $collector, "jaeger-ui-url": $query, "tls_ca": $tls_ca, "tls_cert": $tls_cert, "tls_key": $tls_key, "tls_ca_key": $tls_ca_key}'
+
+echo 
