@@ -37,7 +37,7 @@ DNS.1 = $collectorURL
 EOF
 
 echo
-echo "- Generating Certificates for Tenant"
+echo "Generating Certificates for Tenant"
 
 # Generating CA.key and CA.crt
 openssl req -new -x509 -sha256 -newkey rsa:2048 -nodes \
@@ -63,7 +63,7 @@ openssl x509    -req -extfile <(printf "subjectAltName=DNS:$collectorURL") \
                 -out $customerName/server.crt &> /dev/null
 
 echo 
-echo "- Updating Helm Repository"
+echo "Updating Helm Repository"
 echo
 # Updating repo to latest version
 helm repo update
@@ -85,7 +85,7 @@ sed \
 values-template.yaml > $customerName/values.yaml
 
 echo 
-echo "- Installing Jaeger Components"
+echo "Installing Jaeger Components"
 echo
 # Generating Jaeger YAML
 helm template $customerName jaegertracing/jaeger \
@@ -100,20 +100,4 @@ kubectl create secret generic "$customerName-tls-config" \
 
 kubectl apply -f $customerName/jaeger.yaml -f $customerName/ingress.yaml
 
-tls_ca=`cat $customerName/CA.crt`
-tls_ca_key=`cat $customerName/CA.key`
-tls_cert=`cat $customerName/server.crt`
-tls_key=`cat $customerName/server.key`
-
-echo
-echo "- JSON to be used in VCAP"
-echo
-jq -n   --arg tls_ca "$tls_ca" \
-        --arg tls_ca_key "$tls_ca_key" \
-        --arg tls_cert "$tls_cert" \
-        --arg tls_key "$tls_key" \
-        --arg collector "$collectorURL" \
-        --arg query "$queryURL" \
-        '{"jaeger-collector-url": $collector, "jaeger-ui-url": $query, "tls_ca": $tls_ca, "tls_cert": $tls_cert, "tls_key": $tls_key, "tls_ca_key": $tls_ca_key}'
-
-echo 
+./get_json.sh

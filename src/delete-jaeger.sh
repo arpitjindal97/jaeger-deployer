@@ -1,5 +1,5 @@
 
-customerName="cust"
+customerName=$CUSTOMER_NAME
 
 kubectl delete \
 serviceaccount/$customerName-jaeger-cassandra-schema \
