@@ -15,6 +15,13 @@ cassandra:
 
 ingester:
   enabled: true
+  resources: 
+    limits:
+      cpu: 2
+      memory: 2Gi
+    requests:
+      cpu: 1
+      memory: 1024Mi
 
 collector:
   cmdlineParams:
@@ -27,7 +34,39 @@ collector:
       mountPath: /tls
       readOnly: true
       secretName: temp-tls-config
+  resources: 
+    limits:
+      cpu: 2
+      memory: 2Gi
+    requests:
+      cpu: 1
+      memory: 1024Mi
 
 agent:
   enabled: false
- 
+  resources: 
+    limits:
+      cpu: 1
+      memory: 1Gi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+
+query:
+  resources: 
+    limits:
+      cpu: 1
+      memory: 1Gi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+
+spark:
+  enabled: false
+  resources: 
+    limits:
+      cpu: 1
+      memory: 1Gi
+    requests:
+      cpu: 500m
+      memory: 512Mi

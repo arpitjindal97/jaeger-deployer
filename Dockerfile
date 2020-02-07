@@ -2,7 +2,7 @@ FROM nginx:latest
 
 # Preparing container
 RUN apt-get update \
-    && apt-get -y install curl git jq \
+    && apt-get -y install curl git jq apache2-utils \
     && apt-get -y upgrade openssl
 
 # Installing kubectl command-line tool
@@ -13,6 +13,7 @@ RUN mv ./kubectl /usr/local/bin/kubectl
 # Installing helm command-line tool
 RUN curl -LO https://get.helm.sh/helm-v3.0.2-linux-amd64.tar.gz
 RUN tar -xzvf helm-v3.0.2-linux-amd64.tar.gz
+RUN rm -f *.tar.gz
 RUN cd linux-amd64 && chmod +x helm && mv ./helm /usr/local/bin/helm
 
 # Copying sources to container
