@@ -1,0 +1,9 @@
+persistence:
+  enabled: true
+config:
+  cluster_name: jaeger
+  seed_size: 1
+  dc_name: dc1
+  rack_name: rack1
+  endpoint_snitch: GossipingPropertyFileSnitch
+

@@ -10,19 +10,19 @@ spec:
     spec:
       containers:
       - name: jaeger-tenant-deploy
-        image: arpitjindal1997/jaeger-deploy:latest
+        image: gcr.io/scp-engsrvperfdev-gcp/jaeger-deploy:latest
         imagePullPolicy: Always
         env:
         - name: CUSTOMER_NAME
-          value: cust
+          value: arpit
         - name: KAFKA_BROKER
           value: jaeger-kafka:9092
         - name: CASSANDRA_HOST
-          value: jaeger-cassandra
+          value: prod-cassandra
         - name: DOMAIN
           value: ingress.mon-team.perf-load.shoot.dev.k8s-hana.ondemand.com
         - name: CASSANDRA_DATACENTER
-          value: DC1
+          value: dc1
         - name: KUBECONFIG
           value: /config/kube.yaml
         resources:

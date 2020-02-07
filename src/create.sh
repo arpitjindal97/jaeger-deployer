@@ -63,7 +63,8 @@ openssl x509    -req -extfile <(printf "subjectAltName=DNS:$collectorURL") \
                 -out $customerName/server.crt &> /dev/null
 
 # Generating Basic auth credentials
-htpasswd -c -b $customerName/auth foo bar
+jaeger_pass=`openssl rand -base64 10`
+htpasswd -c -b $customerName/auth jaeger $jaeger_pass
 
 echo 
 echo "Updating Helm Repository"
@@ -100,7 +101,9 @@ kubectl create secret generic "$customerName-tls-config" \
 --from-file=tls.key=$customerName/server.key \
 --from-file=ca.crt=$customerName/CA.crt \
 --from-file=ca.key=$customerName/CA.key \
---from-file=auth=$customerName/auth
+--from-file=auth=$customerName/auth \
+--from-literal=username=jaeger \
+--from-literal=password="$jaeger_pass"
 
 kubectl apply -f $customerName/jaeger.yaml -f $customerName/ingress.yaml
 
