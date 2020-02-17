@@ -1,13 +1,18 @@
 provisionDataStore:
   cassandra: false
+  elasticsearch: false
 
 storage:
+  type: cassandra
   cassandra:
     keyspace: temp
     host: cassandra-host
   kafka:
     brokers: [kafka-broker]
     topic: temp
+  elasticsearch:
+    host: elasticsearch-host
+    usePassword: false
 
 cassandra:
   config:

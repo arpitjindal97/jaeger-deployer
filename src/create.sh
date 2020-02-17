@@ -8,6 +8,9 @@ queryURL=$CUSTOMER_NAME"."$DOMAIN
 kafkaBroker=$KAFKA_BROKER
 cassandraHost=$CASSANDRA_HOST
 cassandraDC=$CASSANDRA_DATACENTER
+storageType=$STORAGE_TYPE
+elasticsearchHost=$ES_HOST
+elasticsearchSecret=$ES_SECRET
 
 mkdir $customerName 
 
@@ -86,6 +89,8 @@ sed \
 -e 's/cassandra-dc/'$cassandraDC'/g' \
 -e 's/kafka-broker/'$kafkaBroker'/g' \
 -e 's/collector-url/'$collectorURL'/g' \
+-e 's/type: cassandra/type: '$storageType'/g' \
+-e 's/elasticsearch-host/'$elasticsearchHost'/g' \
 values-template.yaml > $customerName/values.yaml
 
 echo 
