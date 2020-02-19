@@ -1,0 +1,2 @@
+envOverrides:
+  kafka_auto_create_topics_enable: true

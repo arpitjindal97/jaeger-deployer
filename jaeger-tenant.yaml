@@ -14,9 +14,13 @@ spec:
         imagePullPolicy: Always
         env:
         - name: CUSTOMER_NAME
-          value: arpit
+          value: cust2
         - name: KAFKA_BROKER
           value: jaeger-kafka:9092
+        - name: STORAGE_TYPE
+          value: elasticsearch
+        - name: ES_HOST
+          value: elasticsearch-master
         - name: CASSANDRA_HOST
           value: prod-cassandra
         - name: DOMAIN

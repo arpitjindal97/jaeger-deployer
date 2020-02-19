@@ -20,6 +20,9 @@ cassandra:
 
 ingester:
   enabled: true
+  cmdlineParams:
+    - key: ES_INDEX_PREFIX
+      value: temp
   resources: 
     limits:
       cpu: 2
