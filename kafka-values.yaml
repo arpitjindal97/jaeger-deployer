@@ -1,2 +1,5 @@
 envOverrides:
   kafka_auto_create_topics_enable: true
+replicas: 1
+zookeeper:
+  replicaCount: 1

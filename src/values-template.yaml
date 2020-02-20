@@ -13,6 +13,7 @@ storage:
   elasticsearch:
     host: elasticsearch-host
     usePassword: false
+    indexPrefix: temp
 
 cassandra:
   config:
@@ -20,10 +21,7 @@ cassandra:
 
 ingester:
   enabled: true
-  cmdlineParams:
-    - key: ES_INDEX_PREFIX
-      value: temp
-  resources: 
+  resources:
     limits:
       cpu: 2
       memory: 2Gi
@@ -52,7 +50,7 @@ collector:
 
 agent:
   enabled: false
-  resources: 
+  resources:
     limits:
       cpu: 1
       memory: 1Gi
@@ -61,7 +59,8 @@ agent:
       memory: 512Mi
 
 query:
-  resources: 
+  enabled: true
+  resources:
     limits:
       cpu: 1
       memory: 1Gi
