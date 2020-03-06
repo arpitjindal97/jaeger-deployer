@@ -8,21 +8,21 @@ Cassandra, ElasticSearch and Kafka should be installed prior before you go for i
 
 Below are the commands through which you can install above backing stateful sets :
 
-### Installation of Cassandra
+ - Installation of Cassandra
 
 ```bash
 helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
 helm install cassandra incubator/cassandra --values https://github.wdf.sap.corp/raw/EngSrv-Monitoring/jaeger-deployer/master/cassandra-values.yaml
 ```
 
-### Installation of Kafka
+ - Installation of Kafka
 
 ```bash
 helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
 helm install kafka incubator/kafka --values https://github.wdf.sap.corp/raw/EngSrv-Monitoring/jaeger-deployer/master/kafka-values.yaml
 ```
 
-### ConfigMap with KubeConfig
+ - ConfigMap with KubeConfig
 
 ```bash
 kubectl create configmap kube-config --from-file=config=<path-to-file>
