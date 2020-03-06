@@ -2,18 +2,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cust2-hotrod
+  name: $TEMP-hotrod
   labels:
     app.kubernetes.io/name: hotrod
-    app.kubernetes.io/instance: cust2
-    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/instance: $TEMP
+    app.kubernetes.io/version: "1.17.0"
     app.kubernetes.io/component: application
 spec:
   replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: hotrod
-      app.kubernetes.io/instance: cust2
+      app.kubernetes.io/instance: $TEMP
       app.kubernetes.io/component: application
   strategy:
     type: Recreate
@@ -21,16 +21,16 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: hotrod
-        app.kubernetes.io/instance: cust2
+        app.kubernetes.io/instance: $TEMP
         app.kubernetes.io/component: application
     spec:
       securityContext:
         {}
       containers:
-        - name: cust2-hotrod-app
+        - name: $TEMP-hotrod-app
           securityContext:
             {}
-          image: jaegertracing/example-hotrod:1.16
+          image: jaegertracing/example-hotrod:1.17
           imagePullPolicy: IfNotPresent
           env:
             - name: JAEGER_AGENT_HOST
@@ -52,14 +52,14 @@ spec:
             httpGet:
               path: /
               port: ui
-        - name: cust2-hotrod-agent-sidecar
+        - name: $TEMP-hotrod-agent-sidecar
           securityContext:
             {}
-          image: jaegertracing/jaeger-agent:1.16.0
+          image: jaegertracing/jaeger-agent:1.17.0
           imagePullPolicy: IfNotPresent
           env:
             - name: REPORTER_GRPC_HOST_PORT
-              value: "cust2-collector.ingress.mon-team.perf-load.shoot.dev.k8s-hana.ondemand.com:443"
+              value: $COLLECTOR_URL
             - name: REPORTER_GRPC_TLS
               value: "true"
             - name: REPORTER_GRPC_TLS_CA
@@ -89,15 +89,15 @@ spec:
       volumes:
         - name: agent-tls
           secret:
-            secretName: cust2-tls-config
+            secretName: $TEMP-tls
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: cust2-hotrod
+  name: $TEMP-hotrod
   labels:
     app.kubernetes.io/name: hotrod
-    app.kubernetes.io/instance: cust2
+    app.kubernetes.io/instance: $TEMP
     app.kubernetes.io/component: application
 spec:
   ports:
@@ -107,6 +107,7 @@ spec:
       targetPort: ui
   selector:
     app.kubernetes.io/name: hotrod
-    app.kubernetes.io/instance: cust2
+    app.kubernetes.io/instance: $TEMP
     app.kubernetes.io/component: application
-  type: LoadBalancer
+  type: ClusterIP
+---

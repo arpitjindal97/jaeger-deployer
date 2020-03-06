@@ -17,6 +17,6 @@ deployment.apps/$customerName-jaeger-query \
 job.batch/$customerName-jaeger-cassandra-schema \
 secrets/$customerName-jaeger-cassandra
 
-kubectl delete secret $customerName-tls-config
+kubectl delete secret $customerName-tls $customerName-tls-query
 
 kubectl delete ingress $customerName-collector $customerName-query

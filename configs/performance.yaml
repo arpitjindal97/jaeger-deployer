@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: jaeger-performance
+spec:
+  activeDeadlineSeconds: 300
+  template:
+    metadata:
+      name: jaeger-performance
+    spec:
+      containers:
+        - name: jaeger-performance
+          image: gcr.io/scp-engsrvperfdev-gcp/jaeger-performance:latest
+          imagePullPolicy: Always
+          env:
+            - name: CUSTOMER_NAME
+              value: [$CUSTOMERS]
+            - name: DOMAIN
+              value: $DOMAIN
+          resources:
+            {}
+      restartPolicy: Never

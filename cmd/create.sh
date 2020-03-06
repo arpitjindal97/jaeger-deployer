@@ -13,7 +13,8 @@ elasticsearchSecret=$ES_SECRET
 kafkaBroker=$KAFKA_BROKER
 kafkaEnabled=$KAFKA_ENABLED
 
-mkdir $customerName 
+
+mkdir $customerName
 
 # Creating openssl config
 cat > $customerName/csr_details.txt <<-EOF
@@ -66,6 +67,7 @@ openssl x509    -req -extfile <(printf "subjectAltName=DNS:$collectorURL") \
                 -set_serial 01 \
                 -out $customerName/server.crt &> /dev/null
 
+exit
 # Generating Basic auth credentials
 jaeger_pass=`openssl rand -base64 10`
 htpasswd -c -b $customerName/auth jaeger $jaeger_pass
