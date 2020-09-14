@@ -12,14 +12,14 @@ Below are the commands through which you can install above backing stateful sets
 
 ```bash
 helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-helm install cassandra incubator/cassandra --values https://github.wdf.sap.corp/raw/EngSrv-Monitoring/jaeger-deployer/master/cassandra-values.yaml
+helm install cassandra incubator/cassandra --values https://github.com/arpitjindal97/jaeger-deployer/blob/master/cassandra-values.yaml
 ```
 
  - Installation of Kafka
 
 ```bash
 helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-helm install kafka incubator/kafka --values https://github.wdf.sap.corp/raw/EngSrv-Monitoring/jaeger-deployer/master/kafka-values.yaml
+helm install kafka incubator/kafka --values https://github.com/arpitjindal97/jaeger-deployer/blob/master/kafka-values.yaml
 ```
 
  - ConfigMap with KubeConfig
@@ -31,7 +31,7 @@ kubectl create configmap kube-config --from-file=config=<path-to-file>
 ## Deploy
 
 ```bash
-kubectl apply -f https://github.wdf.sap.corp/raw/EngSrv-Monitoring/jaeger-deployer/master/jaeger-tenant.yaml
+kubectl apply -f https://github.com/arpitjindal97/jaeger-deployer/blob/master/jaeger-tenant.yaml
 ```
 
 ## Usage
@@ -46,7 +46,7 @@ Content-Type: application/json
 		"cust1",
 		"cust2"
 		],
-	"domain": "ingress.mon-team.perf-load.shoot.dev.k8s-hana.ondemand.com",
+	"domain": "ingress.example.com",
 	"storageType": "elasticsearch",
 	"esHost":"elasticsearch-master",
 	"cassandraHost":"cassandra",
@@ -79,7 +79,7 @@ Content-Type: application/json
 		"cust1",
 		"cust2"
 		],
-	"domain": "ingress.mon-team.perf-load.shoot.dev.k8s-hana.ondemand.com",
+	"domain": "ingress.example.com",
     "threadNumber": "100"
 }
 ```

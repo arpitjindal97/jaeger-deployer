@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: jaeger-deployer
-        image: gcr.io/scp-engsrvperfdev-gcp/jaeger-deploy:experimental
+        image: docker.io/arpitjindal1997/jaeger-deployer:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

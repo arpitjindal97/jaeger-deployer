@@ -10,7 +10,7 @@ spec:
     spec:
       containers:
         - name: jaeger-performance
-          image: gcr.io/scp-engsrvperfdev-gcp/jaeger-performance:latest
+          image: docker.io/arpitjindal1997/jaeger-performance:latest
           imagePullPolicy: Always
           env:
             - name: CUSTOMER_NAME

@@ -6,7 +6,7 @@ build: clean checks
 	@echo "Compiling project"
 	GO111MODULE=on GOOS=linux GOARCH=amd64 go build -o output/deployer cmd/tenant/main.go
 	@echo "Building docker image"
-	docker build -t gcr.io/scp-engsrvperfdev-gcp/jaeger-deploy:experimental -f build/Dockerfile .
+	docker build -t docker.io/arpitjindal1997/jaeger-deployer:latest -f build/Dockerfile .
 
 $(GOBINDATA):
 	@echo "Installing go-bindata"
